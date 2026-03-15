@@ -216,8 +216,8 @@ if calculate_pressed:  # Gate: only run when the button has been clicked this fr
         try:  # Wrap API call in try/except to handle network or parsing failures gracefully
 
             client = OpenAI(
-                api_key=st.secrets["sk-9a3d7a3a7ecd410394b2d66e1b4398ed"],
-                base_url=st.secrets["https://api.deepseek.com/v1"]            )
+                api_key=st.secrets["OPENAI_API_KEY"],
+                base_url=st.secrets["OPENAI_BASE_URL"]            )
 
             response = client.chat.completions.create(  # Send a chat completion request
                 model="deepseek-chat",  # Auto-selection plugin picks the best available model
