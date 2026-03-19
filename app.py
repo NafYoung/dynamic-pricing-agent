@@ -244,18 +244,18 @@ if calculate_pressed:  # Gate: only run when the button has been clicked this fr
     
     competitor_table_payload = competitor_df.to_dict("records")  # 新增：将表格转为结构化列表，避免关键字重载告警并供 LLM 描述竞争格局
 
-    user_prompt = (  # 新增：构建寡头场景的请求体，明确“加权竞品均价”是唯一博弈锚点
-        f"以下字段全部由 Python 预计算并锁定，请直接用于中文商业分析写作：\n"  # 新增：明确告知模型输入是只读业务事实，不是可推导草稿
-        f"- LOCKED_OPTIMAL_PRICE: {locked_optimal_price}\n"  # 新增：重复注入锁定价格，双重保险防止模型偏离
-        f"- LOCKED_STRATEGY_STATUS: {locked_strategy_status}\n"  # 新增：重复注入锁定状态，确保分析围绕既定战略展开
-        f"- Marginal Cost (MC): {mc}\n"  # 新增：提供成本背景用于管理层解释，但不允许二次计算
-        f"- Weighted Average Competitor Price: {weighted_average_competitor_price:.2f}\n"  # 新增：提供市场参照背景用于论证，不授权模型做比较判断
-        f"- Market Price Elasticity: {elasticity}\n"  # 新增：提供市场弹性背景辅助策略叙述
-        f"- Selected Lambda (Python computed): {selected_lambda}\n"  # 新增：披露 Python 已选 λ，提升分析可审计性
-        f"- Competitor Table: {json.dumps(competitor_table_payload, ensure_ascii=False)}\n\n"  # 新增：保留明细供模型描述竞争格局，不参与定价计算
-        f"任务要求：你不需要做任何计算，直接引用传入的价格结果，并基于传入的战略状态，撰写三段极其专业的中文商业分析。"  # 新增：按用户要求写死职责边界，彻底限制模型角色
+    # ----------------- 终极用户指令区 (纯业务语境) -----------------
+    user_prompt = (
+        f"【核心业务事实 - 请直接用于高管汇报】\n"
+        f"- 我方最终执行价 (P*): {locked_optimal_price}\n"
+        f"- 市场大盘加权均价: {weighted_average_competitor_price:.2f}\n"
+        f"- 我方边际成本 (MC): {mc}\n"
+        f"- 市场弹性: {elasticity}\n"
+        f"- 战略定调: {locked_strategy_status}\n\n"
+        f"执行要求：请立刻输出三段式诊断报告。严格遵守你在系统指令中的『最高级别红线』！绝口不提系统后台与代码机制，必须以人类高管的口吻，直接向董事会发出【销量断崖式下跌】的刺耳警告，并给出极端的生存对策！"
     )
-
+    
+    # ---------------------------------------------------------------
     # =========================================================================
     # PRE-FLIGHT: DISPLAY CURRENT INPUTS TO THE USER
     # =========================================================================
