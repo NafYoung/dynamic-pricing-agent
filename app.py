@@ -248,7 +248,6 @@ if calculate_pressed:  # Gate: only run when the button has been clicked this fr
         f"以下字段全部由 Python 预计算并锁定，请直接用于中文商业分析写作：\n"  # 新增：明确告知模型输入是只读业务事实，不是可推导草稿
         f"- LOCKED_OPTIMAL_PRICE: {locked_optimal_price}\n"  # 新增：重复注入锁定价格，双重保险防止模型偏离
         f"- LOCKED_STRATEGY_STATUS: {locked_strategy_status}\n"  # 新增：重复注入锁定状态，确保分析围绕既定战略展开
-        f"- LOCKED_CIRCUIT_BREAKER: {locked_circuit_breaker}\n"  # 新增：重复注入熔断布尔，便于模型在文案中准确表述触发状态
         f"- Marginal Cost (MC): {mc}\n"  # 新增：提供成本背景用于管理层解释，但不允许二次计算
         f"- Weighted Average Competitor Price: {weighted_average_competitor_price:.2f}\n"  # 新增：提供市场参照背景用于论证，不授权模型做比较判断
         f"- Market Price Elasticity: {elasticity}\n"  # 新增：提供市场弹性背景辅助策略叙述
