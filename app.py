@@ -233,7 +233,7 @@ if calculate_pressed:  # Gate: only run when the button has been clicked this fr
     # 🌟 新增：将之前算好的加权平均价也固化为字符串。
     # 【注意】：等号右边的 weighted_average_price 必须是你代码中真实计算出来的那个变量名！
     # 如果你的代码里它叫 p_comp_weighted 或者别的名字，请把它替换过来。
-    locked_weighted_price = f"{weighted_average_price:.2f}"
+    locked_weighted_price = f"{weighted_average_competitor_price:.2f}"
 
     # 🌟 修改：更新大模型的“交接清单”
     system_prompt = SYSTEM_PROMPT_TEMPLATE.format(
