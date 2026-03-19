@@ -349,14 +349,14 @@ if calculate_pressed:  # Gate: only run when the button has been clicked this fr
 
             model_optimal_price = float(result.get("optimal_price", computed_optimal_price))  # 新增：读取模型返回价格用于一致性审计，不作为最终业务真值
             optimal_price = computed_optimal_price  # 新增：最终展示价格强制使用 Python 计算结果，彻底剥离模型算数影响
-            justification = result.get("strategic_justification", [])  # 新增：安全读取三段分析，若模型异常则回退为空列表
+            justification = result.get("strategic_analysis", [])  # 🌟 终于对齐了齿轮！
             if not isinstance(justification, list):  # 新增：保证 justification 数据类型稳定，防止非列表导致渲染错误
                 justification = [str(justification)]  # 新增：将异常类型兜底转换为列表，保障页面可渲染
             if len(justification) == 0:  # 新增：当模型未返回分析时注入兜底文案，确保页面对业务方可读
                 justification = [  # 新增：生成三段默认分析，保持输出结构与管理视图一致
-                    f"1. 当前战略状态：{strategy_status}。系统已在 Python 层完成全部数学与分支判断，锁定最优价格为 {optimal_price:.2f}，避免大模型在算术与比较环节产生幻觉风险。",
-                    "2. 多竞争对手格局分析：建议重点跟踪高份额竞品的价格与促销节奏，并结合低份额搅局者的短期扰动，采用差异化价值主张与渠道组合维持目标客户粘性。",
-                    "3. 管理层执行建议：将定价决策与品牌、服务、交付体验联动，形成利润防御与消费者剩余管理闭环；同时建立周期复盘机制，持续校准份额权重与弹性参数。",
+                    "🚨 系统警告：未能获取到大模型的有效分析，请检查网络或 API 契约。",
+                    "暂无数据",
+                    "暂无数据"
                 ]
             price_consistency_gap = round(model_optimal_price - optimal_price, 4)  # 新增：计算模型返回价与Python锁定价差，用于监控模型是否偏离指令
 
