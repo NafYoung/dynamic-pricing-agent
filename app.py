@@ -225,18 +225,23 @@ if calculate_pressed:  # Gate: only run when the button has been clicked this fr
         computed_optimal_price = round(mc + selected_lambda * (weighted_average_competitor_price - mc), 2)  # 新增：Python 计算伯特兰反应函数结果，彻底剥离 LLM 算数职责
         strategy_status = "未触发熔断，执行纳什均衡"  # 新增：写入锁定战略状态字符串，明确当前为均衡执行态
 
-    computed_optimal_price = max(computed_optimal_price, round(mc + 0.01, 2))  # 新增：执行基线保护，确保最终价格严格大于 MC（Constraint 1）
+    computed_optimal_price = max(computed_optimal_price, round(mc + 0.01, 2))  # 执行基线保护，确保最终价格严格大于 MC
 
-    locked_optimal_price = f"{computed_optimal_price:.2f}"  # 新增：将已计算价格固化为字符串，作为不可篡改注入变量
-    locked_strategy_status = strategy_status  # 新增：将战略状态固化为锁定文本，防止模型重解释逻辑分支
-    locked_circuit_breaker = "true" if is_circuit_breaker else "false"  # 新增：将熔断状态转为字符串布尔量，便于提示词中显式约束
+    locked_optimal_price = f"{computed_optimal_price:.2f}"  # 将已计算价格固化为字符串
+    locked_strategy_status = strategy_status  # 将战略状态固化为锁定文本
 
-    system_prompt = SYSTEM_PROMPT_TEMPLATE.format(  # 新增：运行时注入锁定变量生成最终系统提示词，实现“计算先行、文案后置”
-        locked_optimal_price=locked_optimal_price,  # 新增：注入锁定最优价，禁止模型重算
-        locked_strategy_status=locked_strategy_status,  # 新增：注入锁定战略状态，禁止模型改判
-        locked_circuit_breaker=locked_circuit_breaker,  # 新增：注入锁定熔断标志，禁止模型重做比较
-    )  # 新增：结束系统提示词组装
+    # 🌟 新增：将之前算好的加权平均价也固化为字符串。
+    # 【注意】：等号右边的 weighted_average_price 必须是你代码中真实计算出来的那个变量名！
+    # 如果你的代码里它叫 p_comp_weighted 或者别的名字，请把它替换过来。
+    locked_weighted_price = f"{weighted_average_price:.2f}"
 
+    # 🌟 修改：更新大模型的“交接清单”
+    system_prompt = SYSTEM_PROMPT_TEMPLATE.format(
+        locked_optimal_price=locked_optimal_price,  # 注入锁定最优价
+        locked_weighted_price=locked_weighted_price,  # 👈 核心新增：把大盘均价传给大模型！逼它直面现实！
+        locked_strategy_status=locked_strategy_status  # 注入锁定战略状态
+    )
+    
     competitor_table_payload = competitor_df.to_dict("records")  # 新增：将表格转为结构化列表，避免关键字重载告警并供 LLM 描述竞争格局
 
     user_prompt = (  # 新增：构建寡头场景的请求体，明确“加权竞品均价”是唯一博弈锚点
