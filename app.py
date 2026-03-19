@@ -366,8 +366,6 @@ if calculate_pressed:  # Gate: only run when the button has been clicked this fr
             # appropriate visual styling (warning vs. success indicators).
             # =================================================================
 
-            is_circuit_breaker = locked_circuit_breaker == "true"  # 新增：展示层熔断标记直接读取 Python 锁定状态，避免重复判断口径漂移
-
             # =================================================================
             # DISPLAY RESULTS — OPTIMAL PRICE
             # =================================================================
