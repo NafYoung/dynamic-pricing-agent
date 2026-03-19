@@ -308,6 +308,7 @@ if calculate_pressed:  # Gate: only run when the button has been clicked this fr
                 api_key=st.secrets["OPENAI_API_KEY"],
                 base_url=st.secrets["OPENAI_BASE_URL"]            )
 
+            st.info(user_prompt)  # 终极测谎仪：把马上要发给大模型的原话，直接打印在网页上！
             response = client.chat.completions.create(  # Send a chat completion request
                 model="deepseek-chat",  # 新增：启用自动模型选择插件，满足“model=auto”的明确要求
                 response_format={"type": "json_object"},
