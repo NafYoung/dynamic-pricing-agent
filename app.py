@@ -281,7 +281,7 @@ if calculate_pressed:  # Gate: only run when the button has been clicked this fr
                 base_url=st.secrets["OPENAI_BASE_URL"]            )
 
             response = client.chat.completions.create(  # Send a chat completion request
-                model="auto",  # 新增：按需求启用自动模型选择插件，由平台自动选择最优模型
+                model="deepseek-chat",  # 新增：按需求启用自动模型选择插件，由平台自动选择最优模型
                 response_format={"type": "json_object"},
                 messages=[  # Conversation context: system instructions + user query
                     {
